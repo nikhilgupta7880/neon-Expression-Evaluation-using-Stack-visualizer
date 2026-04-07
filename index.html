@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DSA Visualizer: Neon Suite</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <!-- GSAP CDN for Hollywood animations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <!-- SortableJS for drag and drop interactions -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+</head>
+
+<body data-theme="dark">
+
+  <!-- TOP BAR -->
+  <div id="topbar">
+    <div class="logo">Expression Evaluation <span class="neon-operator">using Stack</span></div>
+    <div class="spacer"></div>
+    <button class="btn" onclick="document.getElementById('learn-modal').classList.add('show')">📚 Learn</button>
+    <button id="theme-toggle" class="btn">LIGHT</button>
+  </div>
+
+  <!-- MAIN -->
+  <div id="main">
+
+    <!-- LEFT PANEL: Animation Space -->
+    <div id="left">
+      <!-- Token Strip -->
+      <div class="glass-panel">
+        <div class="section-label neon-operand">Infix Expression</div>
+        <div id="token-strip" class="token-strip"></div>
+      </div>
+
+      <!-- Center Feature: Stacks + Middle Animation area -->
+      <div id="stacks-row">
+        <!-- Postfix Out (moved left for logic flow) -->
+        <div class="stack-wrapper">
+          <div class="stack-title neon-operator">Postfix Output Queue</div>
+          <div class="stack-container" id="postfix-strip"
+            style="flex-direction:column-reverse; border-top:2px solid rgba(255,255,255,0.1); border-bottom:none; border-radius:12px 12px 0 0; justify-content:flex-start">
+          </div>
+        </div>
+
+        <div class="stack-wrapper">
+          <div class="stack-title neon-current">Operator Stack</div>
+          <div class="stack-container" id="op-stack-area"></div>
+        </div>
+
+        <div class="stack-wrapper">
+          <div class="stack-title neon-operand">Operand Stack (Eval)</div>
+          <div class="stack-container" id="operand-stack-area"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL: Dashboard -->
+    <div class="right-panel">
+      <div class="dash-section">
+        <div class="section-label">EXPRESSION INPUT</div>
+        <input type="text" id="expr-input" value="A + B * C" />
+        <div class="grid-2">
+          <button id="load-btn" class="btn active" style="flex:1">Load</button>
+          <button id="predict-btn" class="btn" style="flex:1"
+            onclick="alert('Predict feature launching soon!')">Predict</button>
+        </div>
+        <div style="margin-top:6px;">
+          <span class="preset-tag"
+            onclick="document.getElementById('expr-input').value='5+(2*3)'; document.getElementById('load-btn').click();">5+(2*3)</span>
+          <span class="preset-tag"
+            onclick="document.getElementById('expr-input').value='(A+B)*(C-D)'; document.getElementById('load-btn').click();">(A+B)*(C-D)</span>
+        </div>
+      </div>
+
+      <div class="dash-section">
+        <div class="section-label">CONTROLS & SPEED</div>
+        <div class="grid-2">
+          <button class="btn" id="btn-prev">◄</button>
+          <button class="btn" id="btn-auto">► AUTO</button>
+          <button class="btn" id="btn-next">►</button>
+        </div>
+        <input type="range" id="speed-slider" min="1" max="5" value="3" />
+
+        <div class="section-label" style="margin-top:10px">BOT MODE</div>
+        <div class="radio-group" id="bot-mode-group">
+          <label><input type="radio" name="bmode" value="explain" checked> Serious</label>
+          <label><input type="radio" name="bmode" value="meme"> Hinglish 😂</label>
+          <label><input type="radio" name="bmode" value="exam"> Exam</label>
+        </div>
+      </div>
+
+      <div class="dash-section" style="flex:1">
+        <div class="section-label">METRICS & TIMELINE</div>
+        <div class="metric-grid">
+          <div class="metric-card">
+            <div class="metric-label">Steps</div>
+            <div class="metric-value neon-operand" id="m-steps">0</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Max Stack</div>
+            <div class="metric-value neon-operator" id="m-opstack">0</div>
+          </div>
+        </div>
+        <div class="section-label" style="margin-top:14px">STEP TIMELINE</div>
+        <div class="timeline" id="timeline"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STACKY BOT -->
+  <div id="stacky-bot">
+    <div class="stacky-bubble" id="bot-bubble">
+      <span id="bot-text">Welcome boss! Input a formula to start.</span>
+    </div>
+    <div class="stacky-avatar" id="bot-avatar">🤖</div>
+  </div>
+
+  <!-- LEARN TAB (THEORY) -->
+  <div id="learn-modal">
+    <div class="learn-content">
+      <h2>📚 Master The Theory</h2>
+      <p><strong class="neon-operand">What is a Stack?</strong><br />A linear data structure following LIFO (Last In,
+        First Out). Think of plates stacked on top of each other.</p>
+      <hr style="border:0.5px solid rgba(255,255,255,0.1); margin:14px 0">
+      <p><strong class="neon-operator">Shunting Yard Algorithm</strong><br />Invented by Edsger Dijkstra, it parses
+        infix equations into postfix (Reverse Polish) logic.</p>
+      <hr style="border:0.5px solid rgba(255,255,255,0.1); margin:14px 0">
+      <p><strong class="neon-result">Time & Space Complexity</strong><br />Time: <strong>O(n)</strong> since each token
+        is read exactly once, and Operators pushed/popped at most once.<br />Space: <strong>O(n)</strong> to store
+        output and stacks.</p>
+      <br><button class="btn active" onclick="document.getElementById('learn-modal').classList.remove('show')">Close &
+        Apply</button>
+    </div>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+
+</html>
