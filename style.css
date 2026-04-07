@@ -27,7 +27,15 @@
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
-  background: var(--bg);
+  background: linear-gradient(
+    270deg,
+    #020617,
+    #0f172a,
+    #020617,
+    #0ea5e9
+  );
+  background-size: 800% 800%;
+  animation: gradientShift 15s ease infinite;
   color: var(--neon-text-base);
   font-family: 'Share Tech Mono', monospace;
   height: 100vh;
@@ -35,16 +43,52 @@ body {
   display: flex;
   flex-direction: column;
   transition: background 0.4s ease, color 0.4s ease;
-  background-image: 
-    radial-gradient(circle at 10% 20%, rgba(208, 0, 255, 0.05), transparent 30%),
-    radial-gradient(circle at 90% 80%, rgba(0, 255, 102, 0.05), transparent 30%);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  position: relative;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 [data-theme="light"] body {
+  background: var(--bg);
+  background-image: none;
+  animation: none;
   font-weight: 600; /* Auto-adjust font weight for light mode */
 }
+
+/* ── BACKGROUND LAYERS ── */
+.grid-bg {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: -2;
+  background-image: 
+    linear-gradient(rgba(0,255,255,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,255,255,0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+  animation: moveGrid 10s linear infinite;
+  pointer-events: none;
+}
+
+[data-theme="light"] .grid-bg { opacity: 0.1; }
+
+@keyframes moveGrid {
+  from { background-position: 0 0; }
+  to { background-position: 40px 40px; }
+}
+
+#particles-bg {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
 
 
 /* ── NEON TEXT UTILITIES ── */
