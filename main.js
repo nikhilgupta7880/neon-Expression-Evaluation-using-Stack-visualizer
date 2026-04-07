@@ -60,7 +60,7 @@ const botJokes = {
 
 let tokens = [], allSteps = [], stepIdx = 0, finalResult = 0, finalPostfix = [], autoTimer = null;
 const prec = { '+': 1, '-': 1, '*': 2, '/': 2, '^': 3 };
-const assoc = { '+': 'L', '-': 'L', '*': 'L', '/': 'L', '^': 'R' };
+const assoc = { '+': 'L', '-': 'L', '-': 'L', '/': 'L', '^': 'R' };
 const isOp = t => '+-*/^'.includes(t);
 const isAlnum = t => /^[A-Za-z0-9.]+$/.test(t);
 
@@ -259,5 +259,40 @@ document.getElementById('theme-toggle').onclick = () => {
     document.getElementById('theme-toggle').textContent = body.getAttribute('data-theme').toUpperCase();
 };
 
+// ── PARTICLES BACKGROUND ENGINE (TUNED) ──
+function initParticles() {
+  const canvas = document.getElementById("particles-bg");
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
+  let particles = [];
+  function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+  window.addEventListener('resize', resize);
+  resize();
+
+  for (let i = 0; i < 60; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 2,
+      dx: (Math.random() - 0.5) * 1.2, // Faster energy
+      dy: (Math.random() - 0.5) * 1.2
+    });
+  }
+
+  function animateParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "#00f5ff";
+    particles.forEach(p => {
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+      p.x += p.dx; p.y += p.dy;
+      if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
+      if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
+    });
+    requestAnimationFrame(animateParticles);
+  }
+  animateParticles();
+}
+
 // Initial load
+initParticles();
 loadExpression('5 + ( 2 * 3 )');
