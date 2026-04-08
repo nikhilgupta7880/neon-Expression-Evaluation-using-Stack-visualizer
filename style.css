@@ -162,7 +162,28 @@ body {
   padding: 6px 12px; border-radius: 6px; cursor: pointer; transition: 0.3s; font-family: inherit;
 }
 .btn:hover { background: rgba(255,255,255,0.15); border-color: var(--neon-current); box-shadow: 0 0 10px rgba(208,0,255,0.3); }
-.btn.active { border-color: var(--neon-operand); color: var(--neon-operand); text-shadow: 0 0 5px var(--neon-operand); }
+.btn.active { border-color: var(--neon-current); color: var(--neon-current); text-shadow: 0 0 5px var(--neon-current); }
+
+.badge {
+  font-size: 10px; padding: 2px 8px; border-radius: 4px; border: 1px solid var(--neon-operand);
+  color: var(--neon-operand); text-shadow: 0 0 5px var(--neon-operand);
+}
+
+.flex-align { display: flex; align-items: center; }
+.text-center { text-align: center; }
+
+/* ── DRAG PAD ── */
+.drag-pad {
+  min-height: 80px; border: 2px dashed rgba(255,255,255,0.1); border-radius: 8px;
+  background: rgba(0,0,0,0.2); margin: 10px 0; padding: 10px;
+}
+.dragger { cursor: grab; }
+.dragger:active { cursor: grabbing; }
+
+/* ── MODALS ── */
+.modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; pointer-events: none; transition: 0.4s; }
+.modal.show { opacity: 1; pointer-events: all; }
+
 
 #main { display: flex; flex: 1; overflow: hidden; position: relative; }
 #left { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 24px; overflow-y: auto; overflow-x: hidden; }
@@ -226,6 +247,21 @@ body {
 }
 .stacky-bubble.show { opacity: 1; transform: translateY(0) scale(1); }
 @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+/* ── ANIMATION PRIMITIVES ── */
+.shake-err { animation: shake 0.4s ease-in-out; border-color: var(--neon-error) !important; box-shadow: 0 0 20px var(--neon-error) !important; }
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-10px); }
+  75% { transform: translateX(10px); }
+}
+
+.pulse-glow { animation: pulseGlow 2s infinite alternate; }
+@keyframes pulseGlow {
+  0% { box-shadow: 0 0 5px var(--neon-operator); }
+  100% { box-shadow: 0 0 25px var(--neon-operator); }
+}
+
 
 #explain-box {
   padding: 16px; border-left: 4px solid var(--neon-operator); background: rgba(0, 229, 255, 0.05); font-size: 14px; line-height: 1.6;

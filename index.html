@@ -8,10 +8,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap"
     rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
-  <!-- GSAP CDN for Hollywood animations -->
+  <!-- External Libraries -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-  <!-- SortableJS for drag and drop interactions -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 
 <body data-theme="dark">
@@ -35,8 +35,28 @@
     <div id="left">
       <!-- Token Strip -->
       <div class="glass-panel">
-        <div class="section-label neon-operand">Infix Expression</div>
+        <div class="flex-align" style="justify-content:space-between; margin-bottom:10px;">
+            <div class="section-label neon-operand">Infix Expression</div>
+            <div id="status-badge" class="badge">READY</div>
+        </div>
         <div id="token-strip" class="token-strip"></div>
+      </div>
+
+      <!-- Drag & Drop Pad -->
+      <div class="glass-panel" id="drag-pad-container" style="display:none">
+        <div class="section-label neon-operator">Formula Builder (Drag & Drop)</div>
+        <div id="drag-pad" class="token-strip drag-pad"></div>
+        <div class="flex-align" style="gap:10px; margin-top:10px;">
+            <div id="tool-box" class="token-strip">
+                <div class="token dragger neon-operand">5</div>
+                <div class="token dragger neon-operand">10</div>
+                <div class="token dragger neon-operator">+</div>
+                <div class="token dragger neon-operator">*</div>
+                <div class="token dragger neon-operator">(</div>
+                <div class="token dragger neon-operator">)</div>
+            </div>
+            <button class="btn active" id="btn-use-drag">Use This</button>
+        </div>
       </div>
 
       <!-- Center Feature: Stacks + Middle Animation area -->
@@ -68,14 +88,16 @@
         <input type="text" id="expr-input" value="A + B * C" />
         <div class="grid-2">
           <button id="load-btn" class="btn active" style="flex:1">Load</button>
-          <button id="predict-btn" class="btn" style="flex:1"
-            onclick="alert('Predict feature launching soon!')">Predict</button>
+          <button id="toggle-drag" class="btn" style="flex:1">Drag Mode</button>
         </div>
+        <div class="section-label" style="margin-top:10px">ALGORITHM MODE</div>
+        <select id="algo-mode" class="btn" style="width:100%; text-align:left; border-color:var(--neon-operator)">
+            <option value="postfix">Infix ➔ Postfix (RPN)</option>
+            <option value="prefix">Infix ➔ Prefix (PN)</option>
+        </select>
         <div style="margin-top:6px;">
-          <span class="preset-tag"
-            onclick="document.getElementById('expr-input').value='5+(2*3)'; document.getElementById('load-btn').click();">5+(2*3)</span>
-          <span class="preset-tag"
-            onclick="document.getElementById('expr-input').value='(A+B)*(C-D)'; document.getElementById('load-btn').click();">(A+B)*(C-D)</span>
+          <span class="preset-tag" onclick="setExpr('5+(2*3)')">5+(2*3)</span>
+          <span class="preset-tag" onclick="setExpr('(A+B)*(C-D)')">(A+B)*(C-D)</span>
         </div>
       </div>
 
@@ -122,8 +144,17 @@
     <div class="stacky-avatar" id="bot-avatar">🤖</div>
   </div>
 
+  <!-- RESULT MODAL -->
+  <div id="result-modal" class="modal">
+    <div class="learn-content text-center">
+        <h1 class="neon-result" style="font-size:48px">SUCCESS!</h1>
+        <div id="result-summary" style="margin:20px 0; font-size:20px;"></div>
+        <button class="btn active" onclick="document.getElementById('result-modal').classList.remove('show')">Awesome!</button>
+    </div>
+  </div>
+
   <!-- LEARN TAB (THEORY) -->
-  <div id="learn-modal">
+  <div id="learn-modal" class="modal">
     <div class="learn-content">
       <h2>📚 Master The Theory</h2>
       <p><strong class="neon-operand">What is a Stack?</strong><br />A linear data structure following LIFO (Last In,
