@@ -13,10 +13,10 @@ function playTone(freq, type, duration, vol=0.1) {
   osc.connect(gain); gain.connect(audioCtx.destination);
   osc.start(); osc.stop(audioCtx.currentTime + duration);
 }
-function sfxPush() { playTone(600, 'sine', 0.15, 0.3); }
-function sfxPop() { playTone(400, 'triangle', 0.15, 0.3); }
-function sfxError() { playTone(150, 'sawtooth', 0.4, 0.4); }
-function sfxSuccess() { playTone(400, 'sine', 0.2, 0.3); setTimeout(() => playTone(600, 'sine', 0.3, 0.4), 100); }
+function sfxPush() { playTone(600, 'sine', 0.15, 0.6); }
+function sfxPop() { playTone(400, 'triangle', 0.15, 0.6); }
+function sfxError() { playTone(150, 'sawtooth', 0.5, 0.8); }
+function sfxSuccess() { playTone(400, 'sine', 0.25, 0.7); setTimeout(() => playTone(600, 'sine', 0.4, 0.9), 100); }
 
 const botJokes = {
   pushNum: {
